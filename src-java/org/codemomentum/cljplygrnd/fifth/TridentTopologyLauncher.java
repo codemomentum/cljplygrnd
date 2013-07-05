@@ -1,4 +1,4 @@
-package org.codemomentum.cljplygrnd.fourth;
+package org.codemomentum.cljplygrnd.fifth;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
@@ -7,6 +7,7 @@ import backtype.storm.StormSubmitter;
 import backtype.storm.generated.StormTopology;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
+import org.codemomentum.cljplygrnd.first.RandomSentenceSpout;
 import storm.trident.TridentState;
 import storm.trident.TridentTopology;
 import storm.trident.operation.BaseFunction;
@@ -15,7 +16,6 @@ import storm.trident.operation.builtin.Count;
 import storm.trident.operation.builtin.FilterNull;
 import storm.trident.operation.builtin.MapGet;
 import storm.trident.operation.builtin.Sum;
-import storm.trident.testing.FixedBatchSpout;
 import storm.trident.testing.MemoryMapState;
 import storm.trident.tuple.TridentTuple;
 
@@ -33,27 +33,23 @@ public class TridentTopologyLauncher {
     }
 
     public static StormTopology buildTopology(LocalDRPC drpc) {
-        FixedBatchSpout spout = new FixedBatchSpout(new Fields("sentence"), 3,
-                new Values("the cow jumped over the moon"),
-                new Values("the man went to the store and bought some candy"),
-                new Values("four score and seven years ago"),
-                new Values("how many apples can you eat"),
-                new Values("to be or not to be the person"));
-        spout.setCycle(true);
-
 
 
         TridentTopology topology = new TridentTopology();
         TridentState wordCounts =
-                topology.newStream("spout1", spout)
+                topology.newStream("spout1", new RandomSentenceSpout())
                         .parallelismHint(16)
                         .each(new Fields("sentence"), new Split(), new Fields("word"))
+                        //stream is grouped by the "word" field.
                         .groupBy(new Fields("word"))
-                        .persistentAggregate(new MemoryMapState.Factory(),
+                        //each group is persistently aggregated using the Count aggregator
+                        .persistentAggregate(new MemoryMapState.Factory(),     //the word counts are kept in memory,
+                                                                               // but this can be trivially swapped to use Memcached, Cassandra, or any other persistent store
                                 new Count(), new Fields("count"))
                         .parallelismHint(16);
-
-
+        //the values stored by persistentAggregate represents the aggregation of all batches ever emitted by the stream.
+        //The persistentAggregate method transforms a Stream into a TridentState object. In this case the TridentState object represents all the word counts.
+        // We will use this TridentState object to implement the distributed query portion of the computation.
 
 
         topology.newDRPCStream("words", drpc)

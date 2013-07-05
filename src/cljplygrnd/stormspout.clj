@@ -15,10 +15,10 @@
    [java.io PushbackReader]))
 
 (def twitter-conf
-  {:consumer-token      "kIATR2cgQXt2nGl4mFDP1PveMl3M2NehzOkJelQMEc"
-   :consumer-key        "w5DH0EfPkRhXSSWgXbVBdQ"
-   :access-token        "748991593-020BCLeT4yQ5cCaEGI3IjdMDSwTvfgCYOroULcsg"
-   :access-token-secret "c0H6qIckHwVh5HMOR2pCl6BzgmhPpo5uoE19EXr0LY"})
+  {:consumer-token      ""
+   :consumer-key        ""
+   :access-token        ""
+   :access-token-secret ""})
 
 (def oath-creds
   (make-oauth-creds
