@@ -1,4 +1,4 @@
-package org.codemomentum.cljplygrnd;
+package org.codemomentum.cljplygrnd.third;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
@@ -13,8 +13,6 @@ import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
 import backtype.storm.utils.Utils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;

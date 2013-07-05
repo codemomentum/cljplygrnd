@@ -1,4 +1,4 @@
-package org.codemomentum.cljplygrnd;
+package org.codemomentum.cljplygrnd.second;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;

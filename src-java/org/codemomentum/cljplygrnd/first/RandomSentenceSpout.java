@@ -1,4 +1,4 @@
-package org.codemomentum.cljplygrnd;
+package org.codemomentum.cljplygrnd.first;
 
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
