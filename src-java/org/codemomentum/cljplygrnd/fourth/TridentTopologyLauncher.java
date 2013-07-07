@@ -99,8 +99,8 @@ public class TridentTopologyLauncher {
         TridentTopology topology = new TridentTopology();
         topology.newStream("RandomNumberSpout", new RandomNumberBatchSpout())
                 .parallelismHint(16)
-                .each(new Fields("number"), new TentimesFunction(), new Fields("double"))
-                .each(new Fields("double"), new PrintFilter());
+                .each(new Fields("number"), new TentimesFunction(), new Fields("tentimes"))
+                .each(new Fields("tentimes"), new PrintFilter());
         return topology.build();
     }
 
