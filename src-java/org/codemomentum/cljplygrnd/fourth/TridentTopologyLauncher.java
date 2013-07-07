@@ -100,12 +100,7 @@ public class TridentTopologyLauncher {
         topology.newStream("RandomNumberSpout", new RandomNumberBatchSpout())
                 .parallelismHint(16)
                 .each(new Fields("number"), new TentimesFunction(), new Fields("double"))
-                .partitionAggregate(new Fields("double"), new Sum(), new Fields("sum"))
-                .each(new Fields("sum"), new PrintFilter());
-        //the values stored by persistentAggregate represents the aggregation of all batches ever emitted by the stream.
-        //The persistentAggregate method transforms a Stream into a TridentState object. In this case the TridentState object represents all the word counts.
-        // We will use this TridentState object to implement the distributed query portion of the computation.
-
+                .each(new Fields("double"), new PrintFilter());
         return topology.build();
     }
 
