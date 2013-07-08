@@ -3,6 +3,7 @@ package org.codemomentum.cljplygrnd.intro;
 
 import backtype.storm.Config;
 import backtype.storm.LocalCluster;
+import backtype.storm.generated.RebalanceOptions;
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.OutputCollector;
 import backtype.storm.task.TopologyContext;
@@ -13,6 +14,7 @@ import backtype.storm.topology.base.BaseRichSpout;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
 import backtype.storm.tuple.Values;
+import backtype.storm.utils.TimeCacheMap;
 
 import java.util.Map;
 import java.util.Random;
@@ -63,8 +65,8 @@ public class NonLinearSimpleTopology {
 
         @Override
         public void declareOutputFields(OutputFieldsDeclarer declarer) {
-            declarer.declareStream("even",new Fields("double", "triple"));
-            declarer.declareStream("odd",new Fields("double", "triple"));
+            declarer.declareStream("even", new Fields("double", "triple"));
+            declarer.declareStream("odd", new Fields("double", "triple"));
         }
     }
 
@@ -106,6 +108,33 @@ public class NonLinearSimpleTopology {
         }
     }
 
+    public static class GlobalBolt extends BaseRichBolt {
+        transient TimeCacheMap timeCacheMap;
+
+        private OutputCollector collector;
+
+        @Override
+        public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+            this.collector = outputCollector;
+            this.timeCacheMap = new TimeCacheMap(30, 100);
+        }
+
+        @Override
+        public void execute(Tuple input) {
+            timeCacheMap.put(input, input);
+            collector.emit(new Values(input));
+        }
+
+        @Override
+        public void declareOutputFields(OutputFieldsDeclarer declarer) {
+            declarer.declare(new Fields("odd"));
+        }
+
+        @Override
+        public void cleanup() {
+            System.out.println("******* CLEANUP *******");
+        }
+    }
 
     public static void main(String[] args) throws Exception {
 
@@ -117,17 +146,25 @@ public class NonLinearSimpleTopology {
                 .shuffleGrouping("RandomNumberSpout");
 
         builder.setBolt("EvenBolt", new EvenBolt(), 1)
-                .shuffleGrouping("DoubleAndTripleBolt","even");
+                .shuffleGrouping("DoubleAndTripleBolt", "even");
 
         builder.setBolt("OddBolt", new OddBolt(), 1)
-                .shuffleGrouping("DoubleAndTripleBolt","odd");
+                .shuffleGrouping("DoubleAndTripleBolt", "odd");
+
+        builder.setBolt("GlobalBolt", new GlobalBolt(), 1)
+                .shuffleGrouping("EvenBolt").shuffleGrouping("OddBolt");
 
         Config conf = new Config();
         conf.setDebug(true);
-        conf.setMaxTaskParallelism(3);
 
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("test", conf, builder.createTopology());
+
+        Thread.sleep(1000);
+
+        RebalanceOptions rebalanceOptions = new RebalanceOptions();
+        rebalanceOptions.set_num_workers(5);
+        cluster.rebalance("test", rebalanceOptions);
 
         Thread.sleep(10000);
         cluster.shutdown();

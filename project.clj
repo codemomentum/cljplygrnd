@@ -11,6 +11,8 @@
                   [lamina "0.5.0-rc3"]
                   [twitter-api "0.7.4"]
                   [clojurewerkz/cassaforte "1.0.0-rc5"]
+                  [com.esotericsoftware.kryo/kryo "2.20"]
+                  [de.javakaffee/kryo-serializers "2.20"]
                   ]
   :java-source-paths ["src-java"]
   :jar-exclusions [#"log4j\.properties" #"backtype" #"trident"
