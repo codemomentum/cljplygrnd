@@ -38,11 +38,11 @@ public class NonLinearSimpleTopology {
         @Override
         public void nextTuple() {
             try {
-                Thread.sleep(100);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            collector.emit(new Values(random.nextInt(100)));
+            collector.emit(new Values(random.nextInt(50)));
         }
     }
 
@@ -80,7 +80,7 @@ public class NonLinearSimpleTopology {
 
         @Override
         public void execute(Tuple input) {
-            collector.emit(new Values(input));
+            collector.emit(new Values(input.getInteger(0)));
         }
 
         @Override
@@ -99,7 +99,7 @@ public class NonLinearSimpleTopology {
 
         @Override
         public void execute(Tuple input) {
-            collector.emit(new Values(input));
+            collector.emit(new Values(input.getInteger(0)));
         }
 
         @Override
@@ -121,8 +121,12 @@ public class NonLinearSimpleTopology {
 
         @Override
         public void execute(Tuple input) {
-            timeCacheMap.put(input, input);
+            Object o = timeCacheMap.get(""+input.getInteger(0));
+            if (null!=o) {
+                System.out.println("OBJECT: "+ o +" was seen at most 30 seconds ago *******");
+            }
             collector.emit(new Values(input));
+            timeCacheMap.put(""+input.getInteger(0), input.getInteger(0));
         }
 
         @Override
