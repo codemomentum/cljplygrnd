@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [
                   [org.clojure/clojure "1.5.1"]
+                  [org.clojure/core.async "0.1.222.0-83d0c2-alpha"]
                   [incanter "1.4.1"
                    :exclusions [net.sourceforge.jplasma/jplasma]]
                   [storm "0.8.2"]
@@ -12,7 +13,7 @@
                   [twitter-api "0.7.4"]
                   [clojurewerkz/cassaforte "1.0.0-rc5"]
                   [com.esotericsoftware.kryo/kryo "2.20"]
-                  [de.javakaffee/kryo-serializers "2.20"]
+                  ;[de.javakaffee/kryo-serializers "2.20"]
                   ]
   :java-source-paths ["src-java"]
   :jar-exclusions [#"log4j\.properties" #"backtype" #"trident"
@@ -20,4 +21,3 @@
   :uberjar-exclusions [#"log4j\.properties" #"backtype" #"trident"
                        #"META-INF" #"meta-inf" #"\.yaml"]
   :aot :all )
-
