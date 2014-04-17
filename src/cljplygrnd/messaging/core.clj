@@ -15,7 +15,7 @@
 
 
 (defn try-it [& args]
-  (let [conn (rmq/connect {:host "turtle.rmq.cloudamqp.com" :username "vfxwvyfz" :password "GDW8j7eAj2fqW2kmKAxo75AfYfIPFEAE" :vhost "vfxwvyfz"})
+  (let [conn (rmq/connect {:host "turtle.rmq.cloudamqp.com" :username "xxx" :password "xxx" :vhost "xxx"})
         ch (lch/open conn)
         qname "queue1"]
     (println (format "[main] Connected. Channel id: %d" (.getChannelNumber ch)))
