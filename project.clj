@@ -10,14 +10,22 @@
                    :exclusions [net.sourceforge.jplasma/jplasma]]
                   [storm "0.8.2"]
                   [lamina "0.5.0-rc3"]
-                  [twitter-api "0.7.4"]
+                  [twitter-api "0.7.5"]
                   [clojurewerkz/cassaforte "1.0.0-rc5"]
                   [com.esotericsoftware.kryo/kryo "2.20"]
                   ;[de.javakaffee/kryo-serializers "2.20"]
+
+                  ;messaging
+                  [com.novemberain/langohr "2.0.1"]
+                  [clj-http "0.9.1" :exclusions [org.apache.httpcomponents/httpclient]]
+                  [org.apache.httpcomponents/httpclient "4.3.3"]
                   ]
+  :main cljplygrnd.core
   :java-source-paths ["src-java"]
   :jar-exclusions [#"log4j\.properties" #"backtype" #"trident"
                    #"META-INF" #"meta-inf" #"\.yaml"]
   :uberjar-exclusions [#"log4j\.properties" #"backtype" #"trident"
                        #"META-INF" #"meta-inf" #"\.yaml"]
-  :aot :all )
+  :aot [cljplygrnd.core]
+
+  )
