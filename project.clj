@@ -16,9 +16,11 @@
                   ;[de.javakaffee/kryo-serializers "2.20"]
 
                   ;messaging
-                  [com.novemberain/langohr "2.0.1"]
+                  [com.novemberain/langohr "2.9.0"]
                   [clj-http "0.9.1" :exclusions [org.apache.httpcomponents/httpclient]]
                   [org.apache.httpcomponents/httpclient "4.3.3"]
+
+                  [liberator "0.11.0"]
                   ]
   :main cljplygrnd.core
   :java-source-paths ["src-java"]
